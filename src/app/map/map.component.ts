@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import {} from 'googlemaps';
-import { MapMarker, GoogleMap, MapInfoWindow } from '@angular/google-maps';
+import { MapMarker, GoogleMap, MapInfoWindow, MapRectangle } from '@angular/google-maps';
 
 @Component({
   selector: 'app-map',
@@ -10,10 +10,10 @@ import { MapMarker, GoogleMap, MapInfoWindow } from '@angular/google-maps';
 export class MapComponent implements OnInit {
   @ViewChild(GoogleMap, { static: false }) map: GoogleMap
   @ViewChild(MapInfoWindow, { static: false }) info: MapInfoWindow
+  @ViewChild(MapRectangle, { static: false }) rct: MapRectangle
 
   zoom = 12
   center: google.maps.LatLngLiteral
-  polygon: google.maps.Polygon
   options: google.maps.MapOptions = {
     zoomControl: false,
     scrollwheel: false,
@@ -23,6 +23,7 @@ export class MapComponent implements OnInit {
     minZoom: 8,
   }
   markers = []
+  polygons = []
   infoContent = ''
 
   ngOnInit() {
@@ -31,8 +32,15 @@ export class MapComponent implements OnInit {
         lat: position.coords.latitude,
         lng: position.coords.longitude,
       }
-      this.polygon = new google.maps.Polygon({draggable: true, map: this.map._googleMap, paths: [{lat: 52.902, lng: -1.18}, {lat: 52.902, lng: -1.182},  {lat: 52.90, lng: -1.182},  {lat: 52.90, lng: -1.18}]})
     })
+  }
+
+  ngAfterViewInit() {
+    this.rct.options = {
+      editable: true,
+      draggable: true
+    }
+    this.rct.bounds = {north: 51.5, south: 51.3, west: -0.5, east: 0}
   }
 
   zoomIn() {
@@ -67,6 +75,30 @@ export class MapComponent implements OnInit {
         animation: google.maps.Animation.BOUNCE,
       },
     })
+  }
+
+  addPolygon() {
+    this.polygons.push({
+      options: {
+        draggable: false,
+        editable: false,
+        geodesic: true,
+      },
+      paths: [
+        {lat: 52.34135509726958, lng: -1.5321045},
+        {lat: 51.354439390266904, lng: -1.5638733},
+        {lat: 51.32452335478603, lng: 0.011254122594852},
+        {lat: 52.31036691499413, lng: 0.077757925309447}
+      ],
+    })
+  }
+
+  addRectangle() {
+    this.rct.options = {
+      editable: true,
+      draggable: true
+    }
+    this.rct.bounds = {north: 51.5, south: 51.3, west: -0.5, east: 0}
   }
 
   openInfo(marker: MapMarker, content) {
