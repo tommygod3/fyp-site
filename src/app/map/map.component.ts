@@ -1,6 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import {} from 'googlemaps';
 import { MapMarker, GoogleMap, MapInfoWindow, MapRectangle } from '@angular/google-maps';
+import { ElasticsearchService } from '../elasticsearch.service';
+import { Tile } from '../tile';
+import { GeoJson } from '../geojson'
 
 @Component({
   selector: 'app-map',
@@ -26,6 +29,8 @@ export class MapComponent implements OnInit {
   polygons = []
   infoContent = ''
 
+  constructor(private elasticsearchService: ElasticsearchService) { }
+
   ngOnInit() {
     navigator.geolocation.getCurrentPosition(position => {
       this.center = {
@@ -33,6 +38,15 @@ export class MapComponent implements OnInit {
         lng: position.coords.longitude,
       }
     })
+    let tiles: Tile[] = [];
+    this.elasticsearchService.getTiles().then(value => {
+      tiles = value;
+      tiles.forEach(tile => {
+        console.log(tile);
+      });
+      this.addPolygon(tiles[0].location, "#ff00ff");
+    })
+
   }
 
   ngAfterViewInit() {
@@ -77,19 +91,19 @@ export class MapComponent implements OnInit {
     })
   }
 
-  addPolygon() {
+  addPolygon(location: GeoJson, color: string) {
+    var points = []
+    location.coordinates[0].forEach(coordinate => {
+      points.push({lat: coordinate[1], lng: coordinate[0]})
+    });
     this.polygons.push({
       options: {
         draggable: false,
         editable: false,
         geodesic: true,
+        strokeColor: color
       },
-      paths: [
-        {lat: 52.34135509726958, lng: -1.5321045},
-        {lat: 51.354439390266904, lng: -1.5638733},
-        {lat: 51.32452335478603, lng: 0.011254122594852},
-        {lat: 52.31036691499413, lng: 0.077757925309447}
-      ],
+      paths: points,
     })
   }
 
