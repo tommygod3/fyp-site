@@ -12,22 +12,19 @@ import { GeoJson } from '../geojson'
 })
 export class MapComponent implements OnInit {
   @ViewChild(GoogleMap, { static: false }) map: GoogleMap
-  @ViewChild(MapInfoWindow, { static: false }) info: MapInfoWindow
   @ViewChild(MapRectangle, { static: false }) rct: MapRectangle
 
-  zoom = 12
   center: google.maps.LatLngLiteral
   options: google.maps.MapOptions = {
-    zoomControl: false,
-    scrollwheel: false,
+    zoom: 6,
     disableDoubleClickZoom: true,
-    mapTypeId: 'hybrid',
+    mapTypeId: 'roadmap',
     maxZoom: 15,
-    minZoom: 8,
+    minZoom: 6,
+    fullscreenControl: false,
+    scaleControl: true
   }
-  markers = []
   polygons = []
-  infoContent = ''
 
   constructor(private elasticsearchService: ElasticsearchService) { }
 
@@ -38,6 +35,7 @@ export class MapComponent implements OnInit {
         lng: position.coords.longitude,
       }
     })
+
     let tiles: Tile[] = [];
     this.elasticsearchService.getTiles().then(value => {
       tiles = value;
@@ -49,46 +47,8 @@ export class MapComponent implements OnInit {
 
   }
 
-  ngAfterViewInit() {
-    this.rct.options = {
-      editable: true,
-      draggable: true
-    }
-    this.rct.bounds = {north: 51.5, south: 51.3, west: -0.5, east: 0}
-  }
-
-  zoomIn() {
-    if (this.zoom < this.options.maxZoom) this.zoom++
-  }
-
-  zoomOut() {
-    if (this.zoom > this.options.minZoom) this.zoom--
-  }
-
   click(event: google.maps.MouseEvent) {
     console.log(event)
-  }
-
-  logCenter() {
-    console.log(JSON.stringify(this.map.getCenter()))
-  }
-
-  addMarker() {
-    this.markers.push({
-      position: {
-        lat: this.center.lat + ((Math.random() - 0.5) * 2) / 10,
-        lng: this.center.lng + ((Math.random() - 0.5) * 2) / 10,
-      },
-      label: {
-        color: 'red',
-        text: 'Marker label ' + (this.markers.length + 1),
-      },
-      title: 'Marker title ' + (this.markers.length + 1),
-      info: 'Marker info ' + (this.markers.length + 1),
-      options: {
-        animation: google.maps.Animation.BOUNCE,
-      },
-    })
   }
 
   addPolygon(location: GeoJson, color: string) {
@@ -105,18 +65,5 @@ export class MapComponent implements OnInit {
       },
       paths: points,
     })
-  }
-
-  addRectangle() {
-    this.rct.options = {
-      editable: true,
-      draggable: true
-    }
-    this.rct.bounds = {north: 51.5, south: 51.3, west: -0.5, east: 0}
-  }
-
-  openInfo(marker: MapMarker, content) {
-    this.infoContent = content
-    this.info.open(marker)
   }
 }
