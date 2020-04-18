@@ -1,6 +1,7 @@
 .overlayed {
-    top: 0;
-    left: 0;
-    z-index:1;
+    margin: 10px;
+    top: 50px;
+    left: 0px;
+    z-index: 0;
     position: absolute;
 }
