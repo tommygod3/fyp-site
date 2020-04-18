@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import {} from 'googlemaps';
-import { MapMarker, GoogleMap, MapInfoWindow, MapRectangle } from '@angular/google-maps';
+import { GoogleMap, MapRectangle } from '@angular/google-maps';
 import { ElasticsearchService } from '../elasticsearch.service';
 import { Tile } from '../tile';
 import { GeoJson } from '../geojson'
@@ -15,6 +15,7 @@ export class MapComponent implements OnInit {
   @ViewChild(MapRectangle, { static: false }) rct: MapRectangle
 
   center: google.maps.LatLngLiteral
+  screen: google.maps.LatLngBounds
   options: google.maps.MapOptions = {
     zoom: 6,
     disableDoubleClickZoom: true,
@@ -35,20 +36,21 @@ export class MapComponent implements OnInit {
         lng: position.coords.longitude,
       }
     })
-
-    let tiles: Tile[] = [];
-    this.elasticsearchService.getTiles().then(value => {
-      tiles = value;
-      tiles.forEach(tile => {
-        console.log(tile);
-      });
-      this.addPolygon(tiles[0].location, "#ff00ff");
-    })
-
   }
 
   click(event: google.maps.MouseEvent) {
-    console.log(event)
+    this.polygons = [];
+    this.screen = this.map.getBounds();
+    let geojson: GeoJson = new GeoJson(this.screen);
+    let tiles: Tile[] = [];
+    this.elasticsearchService.getTiles(15, 500000000, geojson).then(value => {
+      tiles = value;
+      tiles.forEach(tile => {
+        console.log(tile);
+        this.addPolygon(tile.location, "#ff00ff");
+      });
+      //this.addPolygon(tiles[0].location, "#ff00ff");
+    })
   }
 
   addPolygon(location: GeoJson, color: string) {

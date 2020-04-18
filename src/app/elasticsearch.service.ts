@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Client, RequestParams, ApiResponse } from 'elasticsearch-browser';
 import { Tile } from './tile';
+import { GeoJson } from './geojson';
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +24,7 @@ export class ElasticsearchService {
     });
   }
 
-  getTiles(): Promise<Tile[]> {
+  getTiles(maxCloudCover: number, minFileSize: number, geoJson: GeoJson): Promise<Tile[]> {
     const params: RequestParams.Search = {
       index: "fyp-tiles",
       body: {
@@ -33,28 +34,25 @@ export class ElasticsearchService {
               {
                 range: {
                   cloud_cover: {
-                    lte: 15
+                    lte: maxCloudCover
                   }
                 }
               },
               {
                 range: {
                   size: {
-                    gte: 500000000
+                    gte: minFileSize
                   }
                 }
               }
             ],
             filter: {
-                geo_shape: {
-                    location: {
-                        shape: {
-                            type: "point",
-                            coordinates : [-0.792584,51.798401]
-                        },
-                        relation: "intersects"
-                    }
+              geo_shape: {
+                location: {
+                  shape: geoJson,
+                  relation: "intersects"
                 }
+              }
             }
           }
         }
