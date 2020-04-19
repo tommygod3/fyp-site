@@ -38,7 +38,6 @@ export class BrowserComponent implements OnInit {
   }
 
   update() {
-    this.searchData.minFileSize *= 1000000;
     this.search.emit(this.searchData);
     this.activeTabIndex = 1;
   }

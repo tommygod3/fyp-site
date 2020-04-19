@@ -51,7 +51,7 @@ export class ElasticsearchService {
               {
                 range: {
                   size: {
-                    gte: searchParameters.minFileSize
+                    gte: searchParameters.minFileSize * 1000000
                   }
                 }
               }
@@ -76,6 +76,7 @@ export class ElasticsearchService {
         .then((response: ApiResponse) => {
           let tiles: Tile[] = [];
           response.hits.hits.forEach(hit => {
+            hit._source.size /= 1000000
             tiles.push(hit._source)
           });
           resolve(tiles);
