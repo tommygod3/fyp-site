@@ -9,7 +9,11 @@
     #polygonElem
     *ngFor="let polygon of polygons"
     [paths]="polygon.paths"
-    [options]="polygon.options"
+    [(options)]="polygon.options"
+    [id]="polygon.id"
+    (polygonClick)="clickPoly(polygonElem)"
+    (polygonMouseover)="hoverOnPoly(polygonElem)"
+    (polygonMouseout)="hoverOffPoly(polygonElem)"
   >
   </map-polygon>
 

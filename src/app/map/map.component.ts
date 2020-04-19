@@ -43,6 +43,43 @@ export class MapComponent implements OnInit {
     console.log(event);
   }
 
+  clickPoly(polygon) {
+    console.log(polygon);
+    // make pop up with tile component
+  }
+
+  hoverOnPoly(polygonHovered) {
+    let indexFound = this.polygons.findIndex(polygon => 
+      polygon.id === polygonHovered.id
+    )
+    this.polygons[indexFound].options = {
+      draggable: false,
+      editable: false,
+      geodesic: true,
+      fillColor: "#57de71",
+      fillOpacity: 0.3,
+      strokeWeight: 2,
+      strokeColor: "#57de71",
+      strokeOpacity: 1,
+    }
+  }
+
+  hoverOffPoly(polygonHovered) {
+    let indexFound = this.polygons.findIndex(polygon => 
+      polygon.id === polygonHovered.id
+    )
+    this.polygons[indexFound].options = {
+      draggable: false,
+      editable: false,
+      geodesic: true,
+      fillColor: "#398ade",
+      fillOpacity: 0.15,
+      strokeWeight: 1,
+      strokeColor: "#398ade",
+      strokeOpacity: 0.8,
+    }
+  }
+
   onSearch(searchData: TileSearch) {
     this.polygons = [];
     this.screen = this.map.getBounds();
@@ -52,12 +89,12 @@ export class MapComponent implements OnInit {
       let tiles: Tile[] = value;
       tiles.forEach(tile => {
         console.log(tile);
-        this.addPolygon(tile.location, "#ff00ff");
+        this.addPolygon(tile.location, tile.path);
       });
     })
   }
 
-  addPolygon(location: GeoJson, color: string) {
+  addPolygon(location: GeoJson, path: string) {
     var points = []
     location.coordinates[0].forEach(coordinate => {
       points.push({lat: coordinate[1], lng: coordinate[0]})
@@ -67,9 +104,14 @@ export class MapComponent implements OnInit {
         draggable: false,
         editable: false,
         geodesic: true,
-        strokeColor: color
+        fillColor: "#398ade",
+        fillOpacity: 0.15,
+        strokeWeight: 1,
+        strokeColor: "#398ade",
+        strokeOpacity: 0.8,
       },
       paths: points,
+      id: path
     })
   }
 }
