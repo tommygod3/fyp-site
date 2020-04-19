@@ -10,6 +10,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { SatDatepickerModule, SatNativeDateModule } from 'saturn-datepicker'
 import { MatIconModule } from '@angular/material/icon';
 import { MatTabsModule } from '@angular/material/tabs';
+import { MatListModule } from '@angular/material/list';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -23,7 +24,7 @@ import { MatNativeDateModule } from '@angular/material/core';
   declarations: [
     AppComponent,
     MapComponent,
-    BrowserComponent
+    BrowserComponent,
   ],
   imports: [
     BrowserModule,
@@ -41,6 +42,7 @@ import { MatNativeDateModule } from '@angular/material/core';
     SatNativeDateModule,
     MatIconModule,
     MatTabsModule,
+    MatListModule,
 
   ],
   providers: [

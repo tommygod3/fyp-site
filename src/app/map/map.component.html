@@ -17,11 +17,10 @@
   >
   </map-polygon>
 
-  <map-rectangle>
-  </map-rectangle>
 </google-map>
 <app-browser
  class="overlayed"
  (search)="onSearch($event)"
+ (visualise)="hoverOnPoly($event)"
 >
 </app-browser>

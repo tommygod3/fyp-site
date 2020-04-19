@@ -1,10 +1,11 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import {} from 'googlemaps';
-import { GoogleMap, MapRectangle } from '@angular/google-maps';
+import { GoogleMap } from '@angular/google-maps';
 import { ElasticsearchService } from '../elasticsearch.service';
 import { Tile } from '../tile';
 import { GeoJson } from '../geojson'
 import { TileSearch } from '../tile-search';
+import { BrowserComponent } from '../browser/browser.component';
 
 @Component({
   selector: 'app-map',
@@ -13,7 +14,7 @@ import { TileSearch } from '../tile-search';
 })
 export class MapComponent implements OnInit {
   @ViewChild(GoogleMap, { static: false }) map: GoogleMap
-  @ViewChild(MapRectangle, { static: false }) rct: MapRectangle
+  @ViewChild(BrowserComponent, { static: false }) browser: BrowserComponent
 
   center: google.maps.LatLngLiteral
   screen: google.maps.LatLngBounds
@@ -27,6 +28,7 @@ export class MapComponent implements OnInit {
     scaleControl: true
   }
   polygons = []
+  tiles: Tile[] = [];
 
   constructor(private elasticsearchService: ElasticsearchService) { }
 
@@ -86,9 +88,9 @@ export class MapComponent implements OnInit {
     let geojson: GeoJson = new GeoJson(this.screen);
 
     this.elasticsearchService.getTiles(searchData, geojson).then(value => {
-      let tiles: Tile[] = value;
-      tiles.forEach(tile => {
-        console.log(tile);
+      this.tiles = value;
+      this.browser.tiles = value;
+      this.tiles.forEach(tile => {
         this.addPolygon(tile.location, tile.path);
       });
     })

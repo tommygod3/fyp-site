@@ -43,7 +43,7 @@
               </mat-form-field>         
           </section>
           <section>
-            <button class="right" mat-raised-button color="primary" (click)="update()">Search</button>
+            <button mat-raised-button color="primary" (click)="update()">Search</button>
           </section>
           
         </mat-card-content>
@@ -56,11 +56,36 @@
         Results
       </ng-template>
 
-      Content 2
-
+      <div class="scrollable">
+          <div *ngFor="let tile of tiles" >
+              <mat-card class="standalone-card">
+                <section class="small-section">
+                  <mat-icon mat-list-icon>calendar_today</mat-icon>
+                  <div mat-line>{{tile.datetime | date:'yyy-MM-dd'}}</div>
+                </section>
+                <section class="small-section">
+                  <mat-icon mat-list-icon>access_time</mat-icon>
+                  <div mat-line>{{tile.datetime | date:'hh:mm:ss'}} UTC</div>
+                </section>
+                <section class="small-section">
+                  <mat-icon mat-list-icon>wb_cloudy</mat-icon>
+                  <div mat-line>{{tile.cloud_cover}}%</div>
+                </section>
+                <section class="small-section">
+                  <mat-icon mat-list-icon>data_usage</mat-icon>
+                  <div mat-line>{{tile.size/1000000}} MB</div>
+                </section>
+                <section class="buttons">
+                  <button fxLayoutAlign="space-between center" mat-raised-button color="primary" (click)="download(tile.path)">Download</button>
+                  <button fxLayoutAlign="space-between center" mat-raised-button color="secondary" (click)="visualisePolygon(tile.path)">Visualise</button>
+                </section>
+              </mat-card>
+          </div>
+          
+      </div>
+  
     </mat-tab>
       
   </mat-tab-group>
-
 
 </mat-card>

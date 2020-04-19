@@ -1,5 +1,6 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { TileSearch } from '../tile-search';
+import { Tile } from '../tile';
 
 @Component({
   selector: 'app-browser',
@@ -18,11 +19,22 @@ export class BrowserComponent implements OnInit {
   };
 
   @Output() search = new EventEmitter<TileSearch>();
+  @Output() visualise = new EventEmitter<any>();
+
+  tiles: Tile[] = [];
 
   constructor() { }
 
 
   ngOnInit(): void {
+  }
+
+  download(path: string) {
+    window.location.href = `http://data.ceda.ac.uk${path}`;
+  }
+
+  visualisePolygon(path: string) {
+    this.visualise.emit({id: path});
   }
 
   update() {
