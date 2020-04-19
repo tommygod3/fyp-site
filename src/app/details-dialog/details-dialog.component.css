@@ -1,0 +1,17 @@
+.buttons {
+    display: flex;
+    justify-content: space-between;
+}
+.small-section {
+    display: flex;
+    align-content: center;
+    align-items: center;
+    height: 30px;
+}
+.scrollable {
+    height: 600px;
+    overflow-y: scroll;
+}
+.standalone-card {
+    margin: 1px;
+}

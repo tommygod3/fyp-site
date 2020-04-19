@@ -1,0 +1,19 @@
+<section class="small-section">
+    <mat-icon mat-list-icon>calendar_today</mat-icon>
+    <div mat-line>{{data.datetime | date:'yyy-MM-dd'}}</div>
+</section>
+<section class="small-section">
+    <mat-icon mat-list-icon>access_time</mat-icon>
+    <div mat-line>{{data.datetime | date:'hh:mm:ss'}} UTC</div>
+</section>
+<section class="small-section">
+    <mat-icon mat-list-icon>wb_cloudy</mat-icon>
+    <div mat-line>{{data.cloud_cover}}%</div>
+</section>
+<section class="small-section">
+    <mat-icon mat-list-icon>data_usage</mat-icon>
+    <div mat-line>{{data.size/1000000}} MB</div>
+</section>
+<section class="buttons">
+    <button fxLayoutAlign="space-between center" mat-raised-button color="primary" (click)="download(data.path)">Download</button>
+</section>

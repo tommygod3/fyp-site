@@ -6,6 +6,8 @@ import { Tile } from '../tile';
 import { GeoJson } from '../geojson'
 import { TileSearch } from '../tile-search';
 import { BrowserComponent } from '../browser/browser.component';
+import { MatDialog } from '@angular/material/dialog';
+import { DetailsDialogComponent } from '../details-dialog/details-dialog.component';
 
 @Component({
   selector: 'app-map',
@@ -30,7 +32,8 @@ export class MapComponent implements OnInit {
   polygons = []
   tiles: Tile[] = [];
 
-  constructor(private elasticsearchService: ElasticsearchService) { }
+  constructor(private elasticsearchService: ElasticsearchService,
+              public dialog: MatDialog) { }
 
   ngOnInit() {
     navigator.geolocation.getCurrentPosition(position => {
@@ -46,8 +49,16 @@ export class MapComponent implements OnInit {
   }
 
   clickPoly(polygon) {
-    console.log(polygon);
-    // make pop up with tile component
+    let tileMatch: Tile;
+    this.tiles.forEach(tile => {
+      if (tile.path == polygon.id) {
+        tileMatch = tile;
+      }
+    });
+    let dialogRef = this.dialog.open(DetailsDialogComponent, {
+      width: "250px",
+      data: tileMatch
+    })
   }
 
   hoverOnPoly(polygonHovered) {

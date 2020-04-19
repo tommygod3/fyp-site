@@ -11,6 +11,7 @@ import { SatDatepickerModule, SatNativeDateModule } from 'saturn-datepicker'
 import { MatIconModule } from '@angular/material/icon';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatListModule } from '@angular/material/list';
+import { MatDialogModule } from '@angular/material/dialog';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -18,6 +19,7 @@ import { MapComponent } from './map/map.component';
 import { BrowserComponent } from './browser/browser.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatNativeDateModule } from '@angular/material/core';
+import { DetailsDialogComponent } from './details-dialog/details-dialog.component';
 
 
 @NgModule({
@@ -25,6 +27,7 @@ import { MatNativeDateModule } from '@angular/material/core';
     AppComponent,
     MapComponent,
     BrowserComponent,
+    DetailsDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -43,6 +46,7 @@ import { MatNativeDateModule } from '@angular/material/core';
     MatIconModule,
     MatTabsModule,
     MatListModule,
+    MatDialogModule,
 
   ],
   providers: [
