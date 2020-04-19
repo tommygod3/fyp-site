@@ -1,7 +1,7 @@
 import { GeoJson } from './geojson';
 
 export class Tile {
-    cloud_cover: number;
+    cloudCover: number;
     datetime: Date;
     location: GeoJson;
     path: string;

@@ -4,6 +4,7 @@ import { GoogleMap, MapRectangle } from '@angular/google-maps';
 import { ElasticsearchService } from '../elasticsearch.service';
 import { Tile } from '../tile';
 import { GeoJson } from '../geojson'
+import { TileSearch } from '../tile-search';
 
 @Component({
   selector: 'app-map',
@@ -39,17 +40,20 @@ export class MapComponent implements OnInit {
   }
 
   click(event: google.maps.MouseEvent) {
+    console.log(event);
+  }
+
+  onSearch(searchData: TileSearch) {
     this.polygons = [];
     this.screen = this.map.getBounds();
     let geojson: GeoJson = new GeoJson(this.screen);
-    let tiles: Tile[] = [];
-    this.elasticsearchService.getTiles(15, 500000000, geojson).then(value => {
-      tiles = value;
+
+    this.elasticsearchService.getTiles(searchData, geojson).then(value => {
+      let tiles: Tile[] = value;
       tiles.forEach(tile => {
         console.log(tile);
         this.addPolygon(tile.location, "#ff00ff");
       });
-      //this.addPolygon(tiles[0].location, "#ff00ff");
     })
   }
 

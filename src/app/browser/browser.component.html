@@ -13,7 +13,7 @@
       </ng-template>
       <div class="content">
         <mat-card-content>
-          <mat-label>Maximum Cloud Cover</mat-label>
+          <mat-label>Maximum Cloud Cover (%)</mat-label>
           <section class="section">
             <mat-icon>wb_sunny</mat-icon>
             <mat-slider
@@ -21,15 +21,15 @@
                 min=1
                 thumbLabel=true
                 color="primary"
-                [(ngModel)]=data.maxCloudCover
+                [(ngModel)]=searchData.maxCloudCover
             >
             </mat-slider>
             <mat-icon class="icon">wb_cloudy</mat-icon>
           </section>
           <section class="section">
             <mat-form-field>
-                <mat-label>Minimum File Size</mat-label>
-                <input type="number" matInput [(ngModel)]="data.minFileSize">
+                <mat-label>Minimum File Size (MB)</mat-label>
+                <input type="number" matInput [(ngModel)]="searchData.minFileSize">
             </mat-form-field>
           </section>
           <section>
@@ -37,7 +37,7 @@
                 <mat-label>Select date range</mat-label>
                 <input matInput
                     [satDatepicker]="picker"
-                    [(ngModel)]="data.date">
+                    [(ngModel)]="searchData.dateRange">
                 <sat-datepicker #picker [rangeMode]="true"></sat-datepicker>
                 <sat-datepicker-toggle matSuffix [for]="picker"></sat-datepicker-toggle>
               </mat-form-field>         

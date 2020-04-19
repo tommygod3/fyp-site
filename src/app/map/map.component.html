@@ -16,4 +16,8 @@
   <map-rectangle>
   </map-rectangle>
 </google-map>
-<app-browser class="overlayed"></app-browser>
+<app-browser
+ class="overlayed"
+ (search)="onSearch($event)"
+>
+</app-browser>
