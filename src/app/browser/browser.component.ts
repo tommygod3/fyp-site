@@ -61,7 +61,7 @@ export class BrowserComponent implements OnInit {
 
   showHelp(): void {
     this.dialog.open(HelpDialogComponent, {
-      width: "250px"
+      width: "900px"
     })
   }
 
