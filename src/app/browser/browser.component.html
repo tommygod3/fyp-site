@@ -1,7 +1,26 @@
 
 <mat-card>
   <mat-card-header>
-    <mat-card-title>Browser</mat-card-title>
+    <mat-card-title>
+      <button mat-icon-button [matMenuTriggerFor]="menu">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item [disabled]="showTiles" (click)="selectTiles()">
+          <mat-icon>map</mat-icon>
+          <span>Tiles</span>
+        </button>
+        <button mat-menu-item [disabled]="showPatches" (click)="selectPatches()">
+          <mat-icon>aspect_ratio</mat-icon>
+          <span>Patches</span>
+        </button>
+        <button mat-menu-item>
+          <mat-icon>backspace</mat-icon>
+          <span>Hide</span>
+        </button>
+      </mat-menu>
+      <span>Browser</span>
+    </mat-card-title>
   </mat-card-header>
 
   <mat-tab-group
@@ -11,7 +30,7 @@
         <mat-icon class="icon">search</mat-icon>
         Search
       </ng-template>
-      <div class="content">
+      <div class="content" *ngIf="showTiles">
         <mat-card-content>
           <mat-label>Maximum Cloud Cover (%)</mat-label>
           <section class="section">
@@ -21,7 +40,7 @@
                 min=1
                 thumbLabel=true
                 color="primary"
-                [(ngModel)]=searchData.maxCloudCover
+                [(ngModel)]=tileSearchData.maxCloudCover
             >
             </mat-slider>
             <mat-icon class="icon">wb_cloudy</mat-icon>
@@ -29,7 +48,7 @@
           <section class="section">
             <mat-form-field>
                 <mat-label>Minimum File Size (MB)</mat-label>
-                <input type="number" matInput [(ngModel)]="searchData.minFileSize">
+                <input type="number" matInput [(ngModel)]="tileSearchData.minFileSize">
             </mat-form-field>
           </section>
           <section>
@@ -37,13 +56,39 @@
                 <mat-label>Select date range</mat-label>
                 <input matInput
                     [satDatepicker]="picker"
-                    [(ngModel)]="searchData.dateRange">
+                    [(ngModel)]="tileSearchData.dateRange">
                 <sat-datepicker #picker [rangeMode]="true"></sat-datepicker>
                 <sat-datepicker-toggle matSuffix [for]="picker"></sat-datepicker-toggle>
               </mat-form-field>         
           </section>
           <section>
-            <button mat-raised-button color="primary" (click)="update()">Search</button>
+            <button mat-raised-button color="primary" (click)="updateSearch(tileSearchData)">Search</button>
+          </section>
+          
+        </mat-card-content>
+      </div>
+      <div class="content" *ngIf="showPatches">
+        <mat-card-content>
+          <section class="section">
+            <mat-form-field>
+              <mat-label>Labels</mat-label>
+              <mat-select [(ngModel)]="patchSearchData.labels" multiple>
+                <mat-option *ngFor="let label of labelList" [value]="label">{{label}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </section>
+          <section>
+            <mat-form-field>
+                <mat-label>Select date range</mat-label>
+                <input matInput
+                    [satDatepicker]="picker"
+                    [(ngModel)]="patchSearchData.dateRange">
+                <sat-datepicker #picker [rangeMode]="true"></sat-datepicker>
+                <sat-datepicker-toggle matSuffix [for]="picker"></sat-datepicker-toggle>
+              </mat-form-field>         
+          </section>
+          <section>
+            <button mat-raised-button color="primary" (click)="updateSearch(patchSearchData)">Search</button>
           </section>
           
         </mat-card-content>
@@ -56,33 +101,66 @@
         Results
       </ng-template>
 
-      <div class="scrollable">
-          <div *ngFor="let tile of tiles" >
+      <div class="scrollable" *ngIf="showTiles">
+          <div *ngFor="let tile of tiles">
               <mat-card class="standalone-card">
                 <section class="small-section">
                   <mat-icon mat-list-icon>calendar_today</mat-icon>
-                  <div mat-line>{{tile.datetime | date:'yyy-MM-dd'}}</div>
+                  <div class="card-text" mat-line>{{tile.datetime | date:'yyy-MM-dd'}}</div>
                 </section>
                 <section class="small-section">
                   <mat-icon mat-list-icon>access_time</mat-icon>
-                  <div mat-line>{{tile.datetime | date:'hh:mm:ss'}} UTC</div>
+                  <div class="card-text" mat-line>{{tile.datetime | date:'hh:mm:ss'}} UTC</div>
                 </section>
                 <section class="small-section">
                   <mat-icon mat-list-icon>wb_cloudy</mat-icon>
-                  <div mat-line>{{tile.cloud_cover}}%</div>
+                  <div class="card-text" mat-line>{{tile.cloud_cover}}%</div>
                 </section>
                 <section class="small-section">
                   <mat-icon mat-list-icon>data_usage</mat-icon>
-                  <div mat-line>{{tile.size}} MB</div>
+                  <div class="card-text" mat-line>{{tile.size}} MB</div>
+                </section>
+                <section *ngIf="tileHasPatches(tile)" class="small-section">
+                  <mat-icon mat-list-icon>aspect_ratio</mat-icon>
+                  <button class="card-text" mat-raised-button (click)="showPatchesFromTile(tile.path)">View Patches</button>
                 </section>
                 <section class="buttons">
                   <button fxLayoutAlign="space-between center" mat-raised-button color="primary" (click)="download(tile.path)">Download</button>
-                  <button fxLayoutAlign="space-between center" mat-raised-button color="secondary" (click)="visualisePolygon(tile.path)">Visualise</button>
+                  <button fxLayoutAlign="space-between center" mat-raised-button color="secondary" (click)="visualisePolygon(tile)">Visualise</button>
                 </section>
               </mat-card>
           </div>
-          
       </div>
+
+      <div class="scrollable" *ngIf="showPatches">
+        <div *ngFor="let patch of patches">
+            <mat-card class="standalone-card">
+              <section class="small-section">
+                <mat-icon mat-list-icon>calendar_today</mat-icon>
+                <div class="card-text" mat-line>{{patch.datetime | date:'yyy-MM-dd'}}</div>
+              </section>
+              <section class="small-section">
+                <mat-icon mat-list-icon>access_time</mat-icon>
+                <div class="card-text" mat-line>{{patch.datetime | date:'hh:mm:ss'}} UTC</div>
+              </section>
+              <section class="small-section">
+                <mat-icon mat-list-icon>label</mat-icon>
+                <button class="card-text" mat-button [matMenuTriggerFor]="menuLabel">Labels</button>
+                <mat-menu #menuLabel="matMenu">
+                  <button *ngFor="let label of patch.labels" mat-menu-item>{{ label }}</button>
+                </mat-menu>
+              </section>
+              <section class="small-section">
+                <mat-icon mat-list-icon>map</mat-icon>
+                <button class="card-text"  mat-raised-button (click)="showTileFromPatch(patch.path)">View Tile</button>
+              </section>
+              <section class="buttons">
+                <button fxLayoutAlign="space-between center" mat-raised-button color="primary" (click)="download(patch.path)">Download</button>
+                <button fxLayoutAlign="space-between center" mat-raised-button color="secondary" (click)="visualisePolygon(patch)">Visualise</button>
+              </section>
+            </mat-card>
+        </div>
+    </div>
   
     </mat-tab>
       

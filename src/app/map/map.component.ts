@@ -6,8 +6,10 @@ import { Tile } from '../tile';
 import { GeoJson } from '../geojson'
 import { TileSearch } from '../tile-search';
 import { BrowserComponent } from '../browser/browser.component';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { DetailsDialogComponent } from '../details-dialog/details-dialog.component';
+import { PatchSearch } from '../patch-search';
+import { Patch } from '../patch';
 
 @Component({
   selector: 'app-map',
@@ -31,6 +33,7 @@ export class MapComponent implements OnInit {
   }
   polygons = []
   tiles: Tile[] = [];
+  patches: Patch[] = [];
 
   constructor(private elasticsearchService: ElasticsearchService,
               public dialog: MatDialog) { }
@@ -48,24 +51,34 @@ export class MapComponent implements OnInit {
     console.log(event);
   }
 
-  clickPoly(polygon) {
-    let tileMatch: Tile;
-    this.tiles.forEach(tile => {
-      if (tile.path == polygon.id) {
-        tileMatch = tile;
+  clickPoly(polygonClicked) {
+    let dialogRef;
+    if (this.tiles.length > 0) {
+      dialogRef = this.dialog.open(DetailsDialogComponent, {
+        width: "250px",
+        data: this.tiles[polygonClicked.id]
+      })
+    }
+    else if (this.patches.length > 0) {
+      dialogRef = this.dialog.open(DetailsDialogComponent, {
+        width: "250px",
+        data: this.patches[polygonClicked.id]
+      })
+    }
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        if (result.type === "tile") {
+          this.showPatchesFromTile(result.path);
+        }
+        else if (result.type === "patch") {
+          this.showTileFromPatch(result.path);
+        }
       }
-    });
-    let dialogRef = this.dialog.open(DetailsDialogComponent, {
-      width: "250px",
-      data: tileMatch
     })
   }
 
   hoverOnPoly(polygonHovered) {
-    let indexFound = this.polygons.findIndex(polygon => 
-      polygon.id === polygonHovered.id
-    )
-    this.polygons[indexFound].options = {
+    this.polygons[polygonHovered.id].options = {
       draggable: false,
       editable: false,
       geodesic: true,
@@ -78,10 +91,7 @@ export class MapComponent implements OnInit {
   }
 
   hoverOffPoly(polygonHovered) {
-    let indexFound = this.polygons.findIndex(polygon => 
-      polygon.id === polygonHovered.id
-    )
-    this.polygons[indexFound].options = {
+    this.polygons[polygonHovered.id].options = {
       draggable: false,
       editable: false,
       geodesic: true,
@@ -93,18 +103,59 @@ export class MapComponent implements OnInit {
     }
   }
 
-  onSearch(searchData: TileSearch) {
+  onSearch(searchData: any) {
     this.polygons = [];
     this.screen = this.map.getBounds();
     let geojson: GeoJson = new GeoJson(this.screen);
 
-    this.elasticsearchService.getTiles(searchData, geojson).then(value => {
-      this.tiles = value;
-      this.browser.tiles = value;
+    if (searchData.maxCloudCover !== undefined) {
+      this.patches = [];
+      this.elasticsearchService.getTiles(searchData, geojson).then(value => {
+        this.tiles = value;
+        this.browser.tiles = value;
+        this.tiles.forEach(tile => {
+          this.addPolygon(tile.location, tile.path);
+        });
+      })
+    }
+    else if (searchData.maxCloudCover === undefined) {
+      this.tiles = [];
+      this.elasticsearchService.getPatches(searchData, geojson).then(value => {
+        this.patches = value;
+        this.browser.patches = value;
+        this.patches.forEach(patch => {
+          this.addPolygon(patch.location, patch.path);
+        });
+      })
+    }
+  }
+
+  showTileFromPatch(path: string) {
+    this.polygons = [];
+    this.elasticsearchService.getTile(path).then(value => {
+      this.tiles.push(value);
+      this.browser.tiles.push(value);
       this.tiles.forEach(tile => {
         this.addPolygon(tile.location, tile.path);
       });
     })
+    this.browser.selectTiles();
+    this.patches = [];
+    this.browser.patches = [];
+  }
+
+  showPatchesFromTile(path: string) {
+    this.polygons = [];
+    this.elasticsearchService.getPatchesFromTile(path).then(value => {
+      this.patches = value;
+      this.browser.patches = value;
+      this.patches.forEach(patch => {
+        this.addPolygon(patch.location, patch.path);
+      });
+    })
+    this.browser.selectPatches();
+    this.tiles = [];
+    this.browser.tiles = [];
   }
 
   addPolygon(location: GeoJson, path: string) {
@@ -124,7 +175,7 @@ export class MapComponent implements OnInit {
         strokeOpacity: 0.8,
       },
       paths: points,
-      id: path
+      id: this.polygons.length
     })
   }
 }

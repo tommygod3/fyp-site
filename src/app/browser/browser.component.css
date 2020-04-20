@@ -12,6 +12,10 @@
     height: 30px;
 }
 
+.card-text {
+    margin-left: 15px;
+}
+
 .content {
     display: flex;
     align-items: center;
@@ -27,6 +31,7 @@
 }
 
 .buttons {
+    margin-top: 5px;
     display: flex;
     justify-content: space-between;
 }

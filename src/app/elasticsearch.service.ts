@@ -3,6 +3,8 @@ import { Client, RequestParams, ApiResponse } from 'elasticsearch-browser';
 import { Tile } from './tile';
 import { GeoJson } from './geojson';
 import { TileSearch } from './tile-search';
+import { PatchSearch } from './patch-search';
+import { Patch } from './patch';
 
 @Injectable({
   providedIn: 'root'
@@ -68,7 +70,6 @@ export class ElasticsearchService {
         }
       }
     }
-    console.log(JSON.stringify(params));
 
     const promise = new Promise<Tile[]>((resolve, reject) => {
       this.client
@@ -80,6 +81,146 @@ export class ElasticsearchService {
             tiles.push(hit._source)
           });
           resolve(tiles);
+        },
+          err => {
+            console.log(err);
+            reject([]);
+          }
+        );
+    });
+    return promise;
+  }
+
+  getPatches(searchParameters: PatchSearch, boundingBox: GeoJson): Promise<Patch[]> {
+    const params: RequestParams.Search = {
+      index: "fyp-patches",
+      body: {
+        size: 100,
+        query: {
+          bool: {
+            must: [
+              {
+                range: {
+                  datetime: {
+                    gte: searchParameters.dateRange.begin.toISOString(),
+                    lte: searchParameters.dateRange.end.toISOString(),
+                  }
+                }
+              }
+            ],
+            filter: {
+              geo_shape: {
+                location: {
+                  shape: boundingBox,
+                  relation: "intersects"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    searchParameters.labels.forEach(label => {
+      params.body.query.bool.must.push({
+        "term": {
+          "labels.keyword": {
+            "value": label
+          }
+        }
+      })
+    });
+
+    const promise = new Promise<Patch[]>((resolve, reject) => {
+      this.client
+        .search(params)
+        .then((response: ApiResponse) => {
+          let patches: Patch[] = [];
+          response.hits.hits.forEach(hit => {
+            hit._source.size /= 1000000
+            patches.push(hit._source)
+          });
+          resolve(patches);
+        },
+          err => {
+            console.log(err);
+            reject([]);
+          }
+        );
+    });
+    return promise;
+  }
+
+
+  getTile(pathSearch: string): Promise<Tile> {
+    const params: RequestParams.Search = {
+      index: "fyp-tiles",
+      body: {
+        size: 1,
+        query: {
+          bool: {
+            must: [
+              {
+                match_phrase_prefix: {
+                  path : pathSearch
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+
+    const promise = new Promise<Tile>((resolve, reject) => {
+      this.client
+        .search(params)
+        .then((response: ApiResponse) => {
+          let tile: Tile;
+          response.hits.hits.forEach(hit => {
+            hit._source.size /= 1000000
+            tile = hit._source;
+          });
+          resolve(tile);
+        },
+          err => {
+            console.log(err);
+            reject([]);
+          }
+        );
+    });
+    return promise;
+  }
+
+
+
+  getPatchesFromTile(pathSearch: string): Promise<Patch[]> {
+    const params: RequestParams.Search = {
+      index: "fyp-patches",
+      body: {
+        size: 100,
+        query: {
+          bool: {
+            must: [
+              {
+                match_phrase_prefix: {
+                  path : pathSearch
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+
+    const promise = new Promise<Patch[]>((resolve, reject) => {
+      this.client
+        .search(params)
+        .then((response: ApiResponse) => {
+          let patches: Patch[] = [];
+          response.hits.hits.forEach(hit => {
+            hit._source.size /= 1000000
+            patches.push(hit._source)
+          });
+          resolve(patches);
         },
           err => {
             console.log(err);
