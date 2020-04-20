@@ -12,6 +12,19 @@
     height: 30px;
 }
 
+.help-button {
+    margin-top: 10px;
+    margin-left: 150px;
+}
+
+.header-small {
+    margin: 0;
+}
+
+.main-title {
+    margin-top: 16px;
+}
+
 .card-text {
     margin-left: 15px;
 }
@@ -30,6 +43,11 @@
     margin-left: 8px;
 }
 
+.hidden-button {
+    margin-top: 26px;
+    margin-left: 32px;
+}
+
 .buttons {
     margin-top: 5px;
     display: flex;
@@ -41,7 +59,7 @@
 }
 
 .standalone-card {
-    margin: 1px;
+    margin: 2px;
 }
 
 

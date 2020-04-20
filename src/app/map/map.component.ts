@@ -47,10 +47,6 @@ export class MapComponent implements OnInit {
     })
   }
 
-  click(event: google.maps.MouseEvent) {
-    console.log(event);
-  }
-
   clickPoly(polygonClicked) {
     let dialogRef;
     if (this.tiles.length > 0) {
@@ -112,6 +108,7 @@ export class MapComponent implements OnInit {
       this.patches = [];
       this.elasticsearchService.getTiles(searchData, geojson).then(value => {
         this.tiles = value;
+        this.browser.tilesMatched = this.elasticsearchService.totalTiles;
         this.browser.tiles = value;
         this.tiles.forEach(tile => {
           this.addPolygon(tile.location, tile.path);
@@ -122,6 +119,7 @@ export class MapComponent implements OnInit {
       this.tiles = [];
       this.elasticsearchService.getPatches(searchData, geojson).then(value => {
         this.patches = value;
+        this.browser.patchesMatched = this.elasticsearchService.totalPatches;
         this.browser.patches = value;
         this.patches.forEach(patch => {
           this.addPolygon(patch.location, patch.path);
@@ -134,6 +132,7 @@ export class MapComponent implements OnInit {
     this.polygons = [];
     this.elasticsearchService.getTile(path).then(value => {
       this.tiles.push(value);
+      this.browser.tilesMatched = this.elasticsearchService.totalTiles;
       this.browser.tiles.push(value);
       this.tiles.forEach(tile => {
         this.addPolygon(tile.location, tile.path);
@@ -142,12 +141,14 @@ export class MapComponent implements OnInit {
     this.browser.selectTiles();
     this.patches = [];
     this.browser.patches = [];
+    this.browser.patchesMatched = 0;
   }
 
   showPatchesFromTile(path: string) {
     this.polygons = [];
     this.elasticsearchService.getPatchesFromTile(path).then(value => {
       this.patches = value;
+      this.browser.patchesMatched = this.elasticsearchService.totalPatches;
       this.browser.patches = value;
       this.patches.forEach(patch => {
         this.addPolygon(patch.location, patch.path);
@@ -156,6 +157,7 @@ export class MapComponent implements OnInit {
     this.browser.selectPatches();
     this.tiles = [];
     this.browser.tiles = [];
+    this.browser.tilesMatched = 0;
   }
 
   addPolygon(location: GeoJson, path: string) {

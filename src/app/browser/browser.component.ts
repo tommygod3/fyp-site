@@ -3,6 +3,8 @@ import { TileSearch } from '../tile-search';
 import { Tile } from '../tile';
 import { PatchSearch, LabelList } from '../patch-search';
 import { Patch } from '../patch';
+import { MatDialog } from '@angular/material/dialog';
+import { HelpDialogComponent } from '../help-dialog/help-dialog.component';
 
 @Component({
   selector: 'app-browser',
@@ -16,6 +18,9 @@ export class BrowserComponent implements OnInit {
 
   tiles: Tile[] = [];
   patches: Patch[] = [];
+
+  tilesMatched: number = 0;
+  patchesMatched: number = 0;
 
   showTiles: boolean = true;
   showPatches: boolean = false;
@@ -44,7 +49,7 @@ export class BrowserComponent implements OnInit {
   @Output() inspectTile = new EventEmitter<string>();
   @Output() inspectPatches = new EventEmitter<string>();
 
-  constructor() { }
+  constructor(public dialog: MatDialog) { }
 
 
   ngOnInit(): void {
@@ -52,6 +57,12 @@ export class BrowserComponent implements OnInit {
 
   swapHidden(): void {
     this.hidden = !this.hidden;
+  }
+
+  showHelp(): void {
+    this.dialog.open(HelpDialogComponent, {
+      width: "250px"
+    })
   }
 
   selectTiles(): void {

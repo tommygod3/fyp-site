@@ -13,7 +13,8 @@ export class ElasticsearchService {
 
   private client: Client;
 
-  public tiles: Tile[] = [];
+  public totalTiles: number = 0;
+  public totalPatches: number = 0;
 
   constructor() {
     if (!this.client) {
@@ -70,12 +71,12 @@ export class ElasticsearchService {
         }
       }
     }
-
     const promise = new Promise<Tile[]>((resolve, reject) => {
       this.client
         .search(params)
         .then((response: ApiResponse) => {
           let tiles: Tile[] = [];
+          this.totalTiles = response.hits.total.value;
           response.hits.hits.forEach(hit => {
             hit._source.size /= 1000000
             tiles.push(hit._source)
@@ -134,6 +135,7 @@ export class ElasticsearchService {
       this.client
         .search(params)
         .then((response: ApiResponse) => {
+          this.totalPatches = response.hits.total.value;
           let patches: Patch[] = [];
           response.hits.hits.forEach(hit => {
             hit._source.size /= 1000000
@@ -174,6 +176,7 @@ export class ElasticsearchService {
       this.client
         .search(params)
         .then((response: ApiResponse) => {
+          this.totalTiles = response.hits.total.value;
           let tile: Tile;
           response.hits.hits.forEach(hit => {
             hit._source.size /= 1000000
@@ -215,6 +218,7 @@ export class ElasticsearchService {
       this.client
         .search(params)
         .then((response: ApiResponse) => {
+          this.totalPatches = response.hits.total.value;
           let patches: Patch[] = [];
           response.hits.hits.forEach(hit => {
             hit._source.size /= 1000000

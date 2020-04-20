@@ -1,26 +1,31 @@
 
 <mat-card *ngIf="!hidden">
-  <mat-card-header>
+  <mat-card-header class="header-small">
     <mat-card-title>
-      <button mat-icon-button [matMenuTriggerFor]="menu">
-        <mat-icon>more_vert</mat-icon>
-      </button>
-      <mat-menu #menu="matMenu">
-        <button mat-menu-item [disabled]="showTiles" (click)="selectTiles()">
-          <mat-icon>map</mat-icon>
-          <span>Tiles</span>
+      <section class="section">
+        <button mat-icon-button [matMenuTriggerFor]="menu">
+          <mat-icon>more_vert</mat-icon>
         </button>
-        <button mat-menu-item [disabled]="showPatches" (click)="selectPatches()">
-          <mat-icon>aspect_ratio</mat-icon>
-          <span>Patches</span>
-        </button>
-        <button mat-menu-item (click)="swapHidden()">
-          <mat-icon>keyboard_backspace</mat-icon>
-          <span>Hide</span>
-        </button>
-      </mat-menu>
-      <span>Browser</span>
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item [disabled]="showTiles" (click)="selectTiles()">
+            <mat-icon>map</mat-icon>
+            <span>Tiles</span>
+          </button>
+          <button mat-menu-item [disabled]="showPatches" (click)="selectPatches()">
+            <mat-icon>aspect_ratio</mat-icon>
+            <span>Patches</span>
+          </button>
+          <button mat-menu-item (click)="swapHidden()">
+            <mat-icon>keyboard_backspace</mat-icon>
+            <span>Hide</span>
+          </button>
+        </mat-menu>
+        <h1 class="main-title">EO-Browser</h1>
+      </section>
     </mat-card-title>
+    <button mat-icon-button class="help-button" color="primary" (click)="showHelp()">
+      <mat-icon>help</mat-icon>
+    </button>
   </mat-card-header>
 
   <mat-tab-group
@@ -102,37 +107,39 @@
       </ng-template>
 
       <div class="scrollable" *ngIf="showTiles">
-          <div *ngFor="let tile of tiles">
-              <mat-card class="standalone-card">
-                <section class="small-section">
-                  <mat-icon mat-list-icon>calendar_today</mat-icon>
-                  <div class="card-text" mat-line>{{tile.datetime | date:'yyy-MM-dd'}}</div>
-                </section>
-                <section class="small-section">
-                  <mat-icon mat-list-icon>access_time</mat-icon>
-                  <div class="card-text" mat-line>{{tile.datetime | date:'hh:mm:ss'}} UTC</div>
-                </section>
-                <section class="small-section">
-                  <mat-icon mat-list-icon>wb_cloudy</mat-icon>
-                  <div class="card-text" mat-line>{{tile.cloud_cover}}%</div>
-                </section>
-                <section class="small-section">
-                  <mat-icon mat-list-icon>data_usage</mat-icon>
-                  <div class="card-text" mat-line>{{tile.size}} MB</div>
-                </section>
-                <section *ngIf="tileHasPatches(tile)" class="small-section">
-                  <mat-icon mat-list-icon>aspect_ratio</mat-icon>
-                  <button class="card-text" mat-raised-button (click)="showPatchesFromTile(tile.path)">View Patches</button>
-                </section>
-                <section class="buttons">
-                  <button fxLayoutAlign="space-between center" mat-raised-button color="primary" (click)="download(tile.path)">Download</button>
-                  <button fxLayoutAlign="space-between center" mat-raised-button color="secondary" (click)="visualisePolygon(tile)">Visualise</button>
-                </section>
-              </mat-card>
-          </div>
+        <div class="standalone-card">Showing {{ tiles.length }} of {{ tilesMatched }} results</div>
+        <div *ngFor="let tile of tiles">
+          <mat-card class="standalone-card">
+            <section class="small-section">
+              <mat-icon mat-list-icon>calendar_today</mat-icon>
+              <div class="card-text" mat-line>{{tile.datetime | date:'yyy-MM-dd'}}</div>
+            </section>
+            <section class="small-section">
+              <mat-icon mat-list-icon>access_time</mat-icon>
+              <div class="card-text" mat-line>{{tile.datetime | date:'hh:mm:ss'}} UTC</div>
+            </section>
+            <section class="small-section">
+              <mat-icon mat-list-icon>wb_cloudy</mat-icon>
+              <div class="card-text" mat-line>{{tile.cloud_cover}}%</div>
+            </section>
+            <section class="small-section">
+              <mat-icon mat-list-icon>data_usage</mat-icon>
+              <div class="card-text" mat-line>{{tile.size}} MB</div>
+            </section>
+            <section *ngIf="tileHasPatches(tile)" class="small-section">
+              <mat-icon mat-list-icon>aspect_ratio</mat-icon>
+              <button class="card-text" mat-raised-button (click)="showPatchesFromTile(tile.path)">View Patches</button>
+            </section>
+            <section class="buttons">
+              <button fxLayoutAlign="space-between center" mat-raised-button color="primary" (click)="download(tile.path)">Download</button>
+              <button fxLayoutAlign="space-between center" mat-raised-button color="secondary" (click)="visualisePolygon(tile)">Visualise</button>
+            </section>
+          </mat-card>
+        </div>
       </div>
 
       <div class="scrollable" *ngIf="showPatches">
+        <div class="standalone-card">Showing {{ patches.length }} of {{ patchesMatched }} results</div>
         <div *ngFor="let patch of patches">
             <mat-card class="standalone-card">
               <section class="small-section">
@@ -168,6 +175,6 @@
 
 </mat-card>
 
-<button *ngIf="hidden" (click)="swapHidden()" mat-mini-fab color="secondary">
+<button *ngIf="hidden" (click)="swapHidden()" mat-mini-fab color="secondary" class="hidden-button">
   <mat-icon>keyboard_tab</mat-icon>
 </button>

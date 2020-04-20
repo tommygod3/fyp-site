@@ -22,6 +22,7 @@ import { BrowserComponent } from './browser/browser.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatNativeDateModule } from '@angular/material/core';
 import { DetailsDialogComponent } from './details-dialog/details-dialog.component';
+import { HelpDialogComponent } from './help-dialog/help-dialog.component';
 
 
 @NgModule({
@@ -30,6 +31,7 @@ import { DetailsDialogComponent } from './details-dialog/details-dialog.componen
     MapComponent,
     BrowserComponent,
     DetailsDialogComponent,
+    HelpDialogComponent,
   ],
   imports: [
     BrowserModule,
