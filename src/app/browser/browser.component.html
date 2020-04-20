@@ -1,5 +1,5 @@
 
-<mat-card>
+<mat-card *ngIf="!hidden">
   <mat-card-header>
     <mat-card-title>
       <button mat-icon-button [matMenuTriggerFor]="menu">
@@ -14,8 +14,8 @@
           <mat-icon>aspect_ratio</mat-icon>
           <span>Patches</span>
         </button>
-        <button mat-menu-item>
-          <mat-icon>backspace</mat-icon>
+        <button mat-menu-item (click)="swapHidden()">
+          <mat-icon>keyboard_backspace</mat-icon>
           <span>Hide</span>
         </button>
       </mat-menu>
@@ -167,3 +167,7 @@
   </mat-tab-group>
 
 </mat-card>
+
+<button *ngIf="hidden" (click)="swapHidden()" mat-mini-fab color="secondary">
+  <mat-icon>keyboard_tab</mat-icon>
+</button>

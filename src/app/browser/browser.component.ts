@@ -12,6 +12,14 @@ import { Patch } from '../patch';
 export class BrowserComponent implements OnInit {
   activeTabIndex: number = 0;
 
+  hidden = false;
+
+  tiles: Tile[] = [];
+  patches: Patch[] = [];
+
+  showTiles: boolean = true;
+  showPatches: boolean = false;
+
   tileSearchData: TileSearch = {
     maxCloudCover: 100,
     minFileSize: 0,
@@ -36,16 +44,14 @@ export class BrowserComponent implements OnInit {
   @Output() inspectTile = new EventEmitter<string>();
   @Output() inspectPatches = new EventEmitter<string>();
 
-  tiles: Tile[] = [];
-  patches: Patch[] = [];
-
-  showTiles: boolean = true;
-  showPatches: boolean = false;
-
   constructor() { }
 
 
   ngOnInit(): void {
+  }
+
+  swapHidden(): void {
+    this.hidden = !this.hidden;
   }
 
   selectTiles(): void {
