@@ -14,6 +14,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
+import { CookieLawModule } from 'angular2-cookie-law';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -54,6 +55,7 @@ import { HelpDialogComponent } from './help-dialog/help-dialog.component';
     MatMenuModule,
     MatSelectModule,
     ReactiveFormsModule,
+    CookieLawModule,
   ],
   providers: [
     MatDatepickerModule

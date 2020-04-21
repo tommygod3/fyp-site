@@ -23,6 +23,7 @@
     "@angular/platform-browser-dynamic": "^9.1.2",
     "@angular/router": "^9.1.2",
     "@types/googlemaps": "^3.39.3",
+    "angular2-cookie-law": "^7.0.1",
     "elasticsearch-browser": "^16.7.1",
     "rxjs": "~6.5.5",
     "saturn-datepicker": "^8.0.5",
