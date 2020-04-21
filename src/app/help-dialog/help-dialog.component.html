@@ -1,21 +1,21 @@
 <h1 id="help">Help</h1>
 <h2 id="browsing-tiles">Browsing Tiles</h2>
-<p>The default mode of the browser is browsing Sentinel 2 tiles. These are complete satellite images taken from the Sentinel program by ESA.<br>Tiles can be filtered using the following 4 inputs:  </p>
+<p>The default mode of the browser is browsing Sentinel 2 tiles. These are complete satellite images taken from the Sentinel program by ESA.<br>Up to 50 tiles in your search results will be rendered. Tiles can be filtered using the following 4 inputs:  </p>
 <ul>
 <li>Maximum Cloud Cover: This is filtered by using the slider  </li>
 <li>Minimum File Size: This is chosen by using the text input box (note: most complete files are no larger than 800MB)  </li>
-<li>Date Range: which is selected by using the date widget  </li>
-<li>Bounding Box: When you enter search the only tiles that are returned will be ones that intersects with the bounding box of the map visible on your screen.  </li>
+<li>Date Range: This is selected by using the date range widget (note: all data is collected between 01/05/2019 - 01/02/2020) </li>
+<li>Bounding Box: When you click search the only tiles that are returned will be ones that intersect with the bounding box of the map visible on your screen.  </li>
 </ul>
 <p>Once tiles have been searched for and selected they can be downloaded directly from the CEDA archive at <a href="http://data.ceda.ac.uk">http://data.ceda.ac.uk</a>.  </p>
 <h3 id="patches">Patches</h3>
-<p>Tiles are broken down into thousands of smaller patches for land cover detection using machine learning.<br>These patches can also be searched for, or if a tile is selected you can view the patches that make it up by selecting the &quot;View Patches&quot; button.  </p>
+<p>Tiles with 15% or less cloud cover that are 500MB in size or larger are broken down into thousands of smaller patches for land cover detection using machine learning.<br>These patches can also be searched for, or if a tile is selected you can view the patches that make it up by selecting the &quot;View Patches&quot; button.  </p>
 <h2 id="browsing-patches">Browsing Patches</h2>
-<p>By clicking the options button in the top left of the browser, Patch Search can be enabled.<br>This will let you search for Sentinel 2 patches instead of tiles.<br>Each patch is a section of a tile that has been given multilabels using a convolutional neural network.<br>Patches can be filtered using the following 3 inputs:  </p>
+<p>By clicking the options button in the top left of the browser, Patch Search can be enabled.<br>This will let you search for Sentinel 2 patches instead of tiles.<br>Each patch is a section of a tile that has been given multi-labels using a convolutional neural network.<br>Up to 100 patches in your search results will be rendered. Patches can be filtered using the following 3 inputs:  </p>
 <ul>
-<li>Multilabels: This is filtered by using the &quot;Labels&quot; drop down menu. You can choose as many labels as you want and only patches that are labelled with all selected labels are chosen.  </li>
-<li>Date Range: which is selected by using the date widget  </li>
-<li>Bounding Box: When you enter search the only patches that are returned will be ones that intersects with the bounding box of the map visible on your screen.  </li>
+<li>Land cover multi-labels: This is filtered by using the &quot;Labels&quot; drop down menu. You can choose as many labels as you want and only patches that have all of the chosen labels are returned.  </li>
+<li>Date Range: This is selected by using the date range widget (note: all data is collected between 01/05/2019 - 01/02/2020) </li>
+<li>Bounding Box: When you click search the only patches that are returned will be ones that intersect with the bounding box of the map visible on your screen.  </li>
 </ul>
 <p>Once patches have been returned they can be selected and the tile that they come from can be downloaded directly from the CEDA archive at <a href="http://data.ceda.ac.uk">http://data.ceda.ac.uk</a>.<br>You can also view the tile that any given patch came from by selecting it and clicking the &quot;View Tile&quot; button.  </p>
 <p>To learn more about Sentinel 2 vist: <a href="https://www.esa.int/Applications/Observing_the_Earth/Copernicus/Sentinel-2">https://www.esa.int/Applications/Observing_the_Earth/Copernicus/Sentinel-2</a>  </p>
