@@ -102,7 +102,7 @@ export class BrowserComponent implements OnInit {
   }
 
   tileHasPatches(tile: any): boolean {
-    if (tile.cloud_cover <= 15 && tile.size >= 500) {
+    if (tile.cloud_cover <= 15) {
       return true;
     }
     else return false;

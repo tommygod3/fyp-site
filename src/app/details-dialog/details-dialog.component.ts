@@ -24,7 +24,7 @@ export class DetailsDialogComponent implements OnInit {
   }
 
   tileHasPatches(data: any): boolean {
-    if (data.cloud_cover <= 15 && data.size >= 500) {
+    if (data.cloud_cover <= 15) {
       return true;
     }
     else return false;
